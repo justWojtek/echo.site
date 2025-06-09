@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Echo Capsule Viewer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #eee;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    input[type="text"] {
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      padding: 0.5rem;
+      width: 300px;
+      margin: 1rem 0;
+      border-radius: 5px;
+    }
+    .capsule {
+      background: #1c1c1c;
+      border: 1px solid #333;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 10px;
+    }
+    .capsule img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+    .summary {
+      background: #222;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border-radius: 6px;
+      white-space: pre-wrap;
+    }
+    .actions {
+      margin-top: 0.75rem;
+    }
+    .actions button, .actions a {
+      margin-right: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .actions button:hover, .actions a:hover {
+      background: #666;
+    }
+  </style>
+  <script>
+    function filterCapsules() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const capsules = document.getElementsByClassName("capsule");
+      for (let capsule of capsules) {
+        const text = capsule.innerText.toLowerCase();
+        capsule.style.display = text.includes(input) ? "block" : "none";
+      }
+    }
+
+    function analyzeCapsule(id) {
+      fetch("http://localhost:3210/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ capsule: id })
+      }).then(res => {
+        if (res.ok) alert("✅ Echo is analyzing: " + id);
+        else alert("❌ Analysis failed.");
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>🔍 Echo Capsule Viewer</h1>
+  <input id="searchInput" type="text" placeholder="Filter capsules…" onkeyup="filterCapsules()" />
+
+  <div class="capsule" id="capsule-001">
+    <h2>🧠 Capsule 001 — Studio Floor Plan</h2>
+    <img src="assets/capsule-001.png" alt="Preview Capsule 001">
+    <div><strong>Prompt:</strong> Analyze layout and entry energy.</div>
+    <div class="summary">
+      Summary: Entrance flow compressed; shift recommended. Good layer structure.
+    </div>
+    <div class="actions">
+      <a href="capsules/capsule-001/summary.md" target="_blank">📖 View Summary</a>
+      <a href="capsules/capsule-001/drawing.dxf" download>📥 Download DXF</a>
+      <button onclick="analyzeCapsule('capsule-001')">🔁 Analyze Again</button>
+    </div>
+  </div>
+
+  <div class="capsule" id="capsule-002">
+    <h2>📐 Capsule 002 — Roof Garden</h2>
+    <img src="assets/capsule-002.png" alt="Preview Capsule 002">
+    <div><strong>Prompt:</strong> Roof access and code-compliant stair.</div>
+    <div class="summary">
+      Summary: Replace spiral stair; shift to 2-run. Optimize corridor light.
+    </div>
+    <div class="actions">
+      <a href="capsules/capsule-002/summary.md" target="_blank">📖 View Summary</a>
+      <a href="capsules/capsule-002/drawing.dxf" download>📥 Download DXF</a>
+      <button onclick="analyzeCapsule('capsule-002')">🔁 Analyze Again</button>
+    </div>
+  </div>
+</body>
+</html>
